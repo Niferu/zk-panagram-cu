@@ -2,7 +2,7 @@
 
 This example is an on-chain ZK panagram game that uses Noir for the ZK circuits and Foundry for the smart contracts
 
-## Usage 
+## Usage 
 
 ### 1. Clone the repo
 
@@ -10,7 +10,7 @@ This example is an on-chain ZK panagram game that uses Noir for the ZK circuits 
 git clone https://github.com/Cyfrin/zk-panagram-cu.git
 ```
 
-### 2. Install the dependencies
+### 2. Install the dependencies
 
 ```bash
 npm install && cd contracts && forge install
