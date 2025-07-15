@@ -3,8 +3,9 @@ import { ethers } from "ethers";
 import { Noir } from "@noir-lang/noir_js";
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-const circuitPath = path.resolve(__dirname, "../../circuits/target/zk_panagram.json");
+const circuitPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../circuits/target/panagram.json");
 const circuit = JSON.parse(fs.readFileSync(circuitPath, 'utf8'));
 
 export default async function generateProof() {
@@ -19,13 +20,13 @@ export default async function generateProof() {
     const honk = new UltraHonkBackend(circuit.bytecode, { threads: 1 });
 
     const input = {
-      // Public inputs
-      address: inputs[1],
-      expected_hash: inputs[2],
-
-      // Private inputs
-      guess: inputs[0]
+      // Private Inputs
+      guess_hash: inputs[0],
+      // Public Inputs
+      answer_double_hash: inputs[1],
+      address: inputs[2],
     };
+    
     const { witness } = await noir.execute(input);
 
     const originalLog = console.log; // Save original

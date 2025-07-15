@@ -8,6 +8,7 @@ plonk_vk.sol
 dist
 circuits/target/vk
 circuits/target/panagram.gz
+*/Prover.toml
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
