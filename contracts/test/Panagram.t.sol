@@ -54,17 +54,30 @@ contract PanagramTest is Test {
     }
 
     function testStartNewRound() public {
-        // start a round (in setUp)
-        // get a winner
         vm.prank(user);
         panagram.makeGuess(proof);
-        // min time passed
+
         vm.warp(panagram.MIN_DURATION() + 1);
-        // start a new round
         panagram.newRound(bytes32(uint256(keccak256(abi.encodePacked(bytes32(uint256(keccak256("abcdefghi")) % FIELD_MODULUS)))) % FIELD_MODULUS));
-        // validate the state has reset
-        vm.assertEq(panagram.getCurrentPanagram(), bytes32(uint256(keccak256(abi.encodePacked(bytes32(uint256(keccak256("abcdefghi")) % FIELD_MODULUS)))) % FIELD_MODULUS));
-        vm.assertEq(panagram.getCurrentRoundStatus(), address(0));
+
+        vm.assertEq(
+            panagram.s_answer(),
+            bytes32(uint256(keccak256(abi.encodePacked(bytes32(uint256(keccak256("abcdefghi")) % FIELD_MODULUS)))) % FIELD_MODULUS)
+        );
+        vm.assertEq(panagram.s_currentRoundWinner(), address(0));
+        vm.assertEq(panagram.s_currentRound(), 2);
+
+        // Cannot start new round if min time not passed
+        vm.prank(second_user);
+        bytes32 answer = bytes32(uint256(keccak256(abi.encodePacked(bytes32(uint256(keccak256("abcdefghi")) % FIELD_MODULUS)))) % FIELD_MODULUS);
+        bytes32 correct_guess = bytes32(uint256(keccak256("abcdefghi")) % FIELD_MODULUS);
+        proof = _getProof(correct_guess, answer, second_user);
+        panagram.makeGuess(proof);
+
+        vm.expectRevert(abi.encodeWithSelector(Panagram.Panagram__MinTimeNotPassed.selector, panagram.MIN_DURATION(), 0));
+        panagram.newRound(bytes32(uint256(keccak256(abi.encodePacked(bytes32(uint256(keccak256("third")) % FIELD_MODULUS)))) % FIELD_MODULUS));
+
+        vm.assertEq(panagram.s_currentRoundWinner(), second_user);
         vm.assertEq(panagram.s_currentRound(), 2);
     }
 
