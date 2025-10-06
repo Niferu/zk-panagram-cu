@@ -65,6 +65,7 @@ contract Panagram is ERC1155, Ownable {
             if (s_currentRoundWinner == address(0)) {
                 revert Panagram__NoRoundWinner();
             }
+            s_roundStartTime = block.timestamp;
             s_answer = _correctAnswer;
             s_currentRoundWinner = address(0);
         }
